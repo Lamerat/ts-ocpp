@@ -112,6 +112,7 @@ export default class CentralSystem {
     port: number,
     cpHandler: RequestHandler<ChargePointAction, RequestMetadata>,
     options: CentralSystemOptions = {},
+    server: any,
   ) {
     this.cpHandler = cpHandler;
     const host = options.host ?? '0.0.0.0';
@@ -121,12 +122,12 @@ export default class CentralSystem {
       websocketPingInterval: 30_000
     };
 
-    this.httpServer = createServer();
+    this.httpServer = server;
     this.httpServer.on('connection', socket => {
       options.onRawSocketData &&
         socket.on('data', data => options.onRawSocketData?.(data));
     })
-    this.httpServer.listen(port, host);
+    // this.httpServer.listen(port, host);
 
     this.soapServer = this.setupSoapServer();
     this.websocketsServer = this.setupWebsocketsServer();
